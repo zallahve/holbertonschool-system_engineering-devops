@@ -1,0 +1,21 @@
+User (Browser)
+   |
+   | HTTPS (TLS)
+   v
+[Firewall #1]
+Load Balancer Server (HAProxy + SSL cert)
+   |
+   | HTTP (inside network) / or re-encrypted HTTPS if configured
+   |------------------------------|
+   v                              v
+[Firewall #2]                    [Firewall #3]
+Web/App/DB Server 1              Web/App/DB Server 2
+- Nginx                          - Nginx
+- App Server                     - App Server
+- App Files                      - App Files
+- MySQL PRIMARY (writes)         - MySQL REPLICA (reads)
+- Monitoring agent               - Monitoring agent
+
+LB also has Monitoring agent
+MySQL replication: Primary -> Replica
+

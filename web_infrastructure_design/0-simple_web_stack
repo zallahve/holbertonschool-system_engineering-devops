@@ -20,4 +20,49 @@ Server (IP: 8.8.8.8)
 |   v                                                |
 | MySQL (database)                                   |
 +----------------------------------------------------+
+What is a server?
 
+A server is a computer (physical or virtual) that provides services to other computers over a network (here: serving a website).
+
+Role of the domain name
+
+The domain name (foobar.com) is a human-friendly name that maps to an IP address via DNS, so users don’t need to remember 8.8.8.8.
+
+What DNS record type is www in www.foobar.com?
+
+It’s an A record (because it points to an IPv4 address: 8.8.8.8).
+
+Role of the web server (Nginx)
+
+Nginx:
+
+accepts incoming HTTP/HTTPS requests
+
+serves static files (images/css/js) if needed
+
+forwards dynamic requests to the application server (reverse proxy)
+
+Role of the application server
+
+The application server executes your backend code (business logic) and generates dynamic responses (HTML/JSON), often by talking to the database.
+
+Role of the database (MySQL)
+
+MySQL stores and retrieves persistent data (users, posts, products, sessions, etc.).
+
+What does the server use to communicate with the user’s computer?
+
+It communicates over the network using TCP/IP, and the web traffic is typically HTTP (port 80) or HTTPS (port 443).
+
+What are the issues with this infrastructure? (must mention)
+SPOF (Single Point of Failure)
+
+Everything is on one server. If it dies (hardware, OS, disk, network), the whole site is down.
+
+Downtime during maintenance/deployments
+
+Restarting Nginx/app server, deploying code, or DB maintenance can cause temporary outage because there’s no redundant instance.
+
+Cannot scale for high traffic
+
+One machine has limited CPU/RAM/network. If traffic grows, it becomes slow or unavailable (no load balancer, no horizontal scaling).

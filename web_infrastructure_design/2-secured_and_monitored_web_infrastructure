@@ -18,4 +18,33 @@ Web/App/DB Server 1              Web/App/DB Server 2
 
 LB also has Monitoring agent
 MySQL replication: Primary -> Replica
+Explain: for every added element, why
+3 Firewalls (why)
 
+Control inbound/outbound traffic with rules (allow only needed ports).
+
+Reduce attack surface.
+
+Separate trust boundaries (internet → LB, LB → backend, backend → DB services).
+
+Typical rules you can mention:
+
+LB firewall: allow 443 (HTTPS) from internet, maybe 80 (redirect), allow backend ports to servers.
+
+Web/App servers firewall: allow only traffic from LB (not from the whole internet), e.g. 80/443 internal, app port if needed.
+
+DB: allow 3306 only from trusted servers, replication port as needed.
+
+SSL certificate (why)
+
+Enables HTTPS for www.foobar.com to encrypt traffic and prevent interception/tampering.
+
+Provides server authentication (client knows it’s really foobar.com).
+
+Protects cookies/credentials/session tokens.
+
+3 monitoring clients (why)
+
+Each server runs an agent to collect logs/metrics and send them to a monitoring platform.
+
+Without agents, you have no visibility into performance, errors, attacks, disk full, CPU spikes, etc.

@@ -1,0 +1,64 @@
+User
+  |
+  | DNS: www.foobar.com -> VIP (Floating IP)
+  v
+        +-----------------------------+
+        |  Load Balancer Cluster      |
+        |  (HAProxy + Keepalived VIP) |
+        |  LB1 (active)   LB2 (passive)|
+        +-----------------------------+
+                   |
+                   | forwards requests
+                   v
+           +-------------------+
+           | Web Server        |
+           | Nginx             |
+           +-------------------+
+                   |
+                   | forwards to app layer
+                   v
+           +-------------------+
+           | Application Server|
+           | runs code         |
+           +-------------------+
+                   |
+                   | SQL queries
+                   v
+           +-------------------+
+           | Database Server   |
+           | MySQL (Primary)   |
+           +-------------------+
+1) Why add one more server?
+
+To increase capacity and availability by distributing responsibilities and removing overload from a single machine.
+
+2) Why add a second load balancer (HAProxy cluster)?
+
+Because a single load balancer is a SPOF. Two LBs in a cluster provide redundancy:
+
+if LB1 fails, LB2 takes over, keeping the site reachable.
+
+Common clustering method:
+
+Keepalived / VRRP provides a Virtual IP (VIP) that moves from LB1 to LB2 on failure.
+
+3) Why split components onto their own servers?
+
+To scale and secure each layer independently:
+
+Web server (Nginx): optimized for HTTP handling, static assets, reverse proxy
+
+Application server: runs business logic; can scale horizontally without affecting DB
+
+Database server (MySQL): needs strong disk I/O, backups, restricted access; isolate for security and performance
+
+Benefits you should mention (short):
+
+independent scaling (web/app/db scale differently)
+
+less resource contention
+
+smaller blast radius (if web is compromised, DB is not sitting on same host)
+
+easier maintenance and tuning per role EOF
+

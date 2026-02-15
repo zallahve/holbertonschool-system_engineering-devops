@@ -19,3 +19,71 @@ Server 1                        Server 2
            | Replication (binlog)
            v
    MySQL Replica syncs from Primary
+Load balancer (HAProxy): distributes traffic across multiple servers, improves availability (if one backend dies, the other can still serve), and helps scale.
+
+Second web/app server: removes the “one server gets overloaded” problem and reduces downtime risk if one server fails.
+
+Database Primary–Replica: improves availability for reads and supports scaling reads (replica can serve read queries), and provides redundancy (but not full write redundancy).
+
+Load balancer algorithm (what to say)
+Distribution algorithm: Round Robin
+
+HAProxy sends requests to backend servers in rotation:
+
+Request 1 → Server 1
+
+Request 2 → Server 2
+
+Request 3 → Server 1
+
+etc.
+
+It’s simple and works well when servers have similar capacity.
+
+(If your mentor asks alternatives: leastconn sends traffic to the server with the fewest active connections.)
+
+Active-Active vs Active-Passive (what your LB is doing)
+In this design: Active-Active (for the web/app layer)
+
+Both Server 1 and Server 2 actively receive traffic at the same time.
+
+Difference:
+
+Active-Active: multiple servers handle requests simultaneously → better throughput + redundancy.
+
+Active-Passive: one server is live, the other is standby → simpler, but you don’t use the passive server until failover.
+
+(Important: you only have ONE load balancer here, so the LB itself is not redundant.)
+
+How MySQL Primary–Replica works (Master–Slave)
+
+Primary handles writes (INSERT/UPDATE/DELETE).
+
+Primary records changes in binary logs (binlog).
+
+Replica reads those logs and replays changes to keep a copy of the data (often async replication).
+
+Difference for the application
+
+App should write to Primary (source of truth).
+
+App can read from Replica (optional optimization) — but replica may lag slightly behind primary.
+
+Issues you MUST mention
+Where are the SPOFs?
+
+Load balancer is a SPOF (only one HAProxy).
+
+MySQL Primary is a SPOF for writes (if it dies, writes stop unless you promote the replica).
+
+(Also commonly: DNS can be a SPOF depending on setup, but the big two above are the expected answers.)
+
+Security issues
+
+No firewall → everything is exposed.
+
+No HTTPS → traffic can be intercepted/modified (no encryption, no integrity).
+
+No monitoring
+
+No metrics/alerts/log aggregation → you won’t know failures, overload, or attacks early.

@@ -1,1 +1,23 @@
-PASTE_YOUR_DIAGRAM_LINK_HERE
+https://imgur.com/User (browser)
+   |
+   | 1) DNS lookup: www.foobar.com
+   v
+DNS resolver
+   |
+   | 2) Returns A record -> 8.8.8.8
+   v
+Server (IP: 8.8.8.8)
++----------------------------------------------------+
+| Nginx (web server)                                 |
+|   |                                                |
+|   | reverse proxy (HTTP)                           |
+|   v                                                |
+| Application server (runs your code)                |
+|   |                                                |
+|   v                                                |
+| Application files (codebase)                       |
+|   |                                                |
+|   v                                                |
+| MySQL (database)                                   |
++----------------------------------------------------+
+

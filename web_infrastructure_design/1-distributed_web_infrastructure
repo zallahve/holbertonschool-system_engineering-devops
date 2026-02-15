@@ -1,0 +1,21 @@
+User (Browser)
+   |
+   | 1) DNS lookup: www.foobar.com  -> returns LB public IP
+   v
+Load Balancer (HAProxy)
+   |  (Round Robin distribution)
+   |-------------------------------|
+   v                               v
+Server 1                        Server 2
++-------------------+           +-------------------+
+| Nginx (web server) |          | Nginx (web server) |
+|   |                |          |   |                |
+|   v                |          |   v                |
+| App Server         |          | App Server         |
+| App Files (code)   |          | App Files (code)   |
+| MySQL PRIMARY      |          | MySQL REPLICA      |
++-------------------+           +-------------------+
+           |
+           | Replication (binlog)
+           v
+   MySQL Replica syncs from Primary
